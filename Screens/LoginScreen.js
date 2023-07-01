@@ -13,22 +13,37 @@ import React, { useEffect, useState } from "react";
 import MarterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { auth } from "../firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const auth = getAuth();
   useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
+    const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigation.replace("Home");
       }
+      console.log(user);
     });
+    return unsub;
   }, []); // Sign In after Sign up sucessfully
-  const singIn = () => {};
+  const singIn = () => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
 
   return (
     <SafeAreaView
@@ -112,6 +127,7 @@ const LoginScreen = ({ navigation }) => {
               setPassword(text);
             }}
             secureTextEntry={true}
+            onSubmitEditing={singIn}
           ></TextInput>
 
           <TouchableOpacity onPress={() => {}}>
@@ -130,6 +146,7 @@ const LoginScreen = ({ navigation }) => {
             borderRadius: 10,
             marginBottom: 30,
           }}
+          onPress={singIn}
         >
           <Text
             style={{

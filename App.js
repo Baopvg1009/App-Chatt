@@ -5,12 +5,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./Screens/LoginScreen.js";
 import RegisterScreen from "./Screens/RegisterScreen.js";
 import HomeScreen from "./Screens/HomeScreen.js";
+import AddChatScreen from "./Screens/AddChatScreen.js";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator
+      //  initialRouteName="Home"
+      >
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -25,6 +29,11 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={{ title: "Home" }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="AddChat"
+          component={AddChatScreen}
+          options={{ title: "Add-Chat" }}
         ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

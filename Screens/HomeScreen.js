@@ -1,31 +1,73 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomListItem from "../Components/CustomListItem";
 import { Avatar } from "@rneui/base";
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
+import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
   const auth = getAuth();
+  const signOutUser = async () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Sign-out successful.");
+        navigation.replace("Login");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: "Signal",
+      headerTitle: () => (
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 25, marginLeft: 10 }}>Signal</Text>
+        </View>
+      ),
       headerStyle: { backgroundColor: "#fff" },
       headerTitleStyle: { color: "black" },
       headerTintColor: "black",
-      headerRight: () => {
-        <View style={{ marginLeft: 20, color: "black" }}>
+
+      headerLeft: () => (
+        <TouchableOpacity onPress={signOutUser} activeOpacity={0.5}>
           <Avatar
             rounded
-            source={{
-              // uri: auth?.currentUser.photoURL
-              uri: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
-            }}
+            source={{ uri: auth?.currentUser?.photoURL }}
+            style={{ width: 30, height: 30 }}
           />
-        </View>;
-      },
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: 50,
+            marginRight: 5,
+          }}
+        >
+          <TouchableOpacity activeOpacity={0.5} style={{ marginRight: 15 }}>
+            <AntDesign name="camera" size={24} color={"black"} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => navigation.navigate("AddChat")}
+          >
+            <SimpleLineIcons name="pencil" size={22} color={"black"} />
+          </TouchableOpacity>
+        </View>
+      ),
     });
-  }, []);
+  }, [navigation]);
 
   return (
     <SafeAreaView>

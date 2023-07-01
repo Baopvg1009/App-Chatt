@@ -26,27 +26,22 @@ const RegisterScreen = ({ navigation }) => {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
-        console.log(userCredential);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-    updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: imageUrl,
-    })
-      .then(() => {
-        console.log("Profile updated! " + name + " " + imageUrl);
 
-        // ...
+        updateProfile(user, {
+          displayName: name,
+          photoURL: imageUrl,
+        })
+          .then(() => {
+            // Profile updated successfully
+            console.log("Succesfully");
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
       })
       .catch((error) => {
-        // An error occurred
-        // ...
+        alert(error.message);
       });
   };
   return (
