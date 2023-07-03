@@ -11,8 +11,10 @@ import { Input, Button } from "@rneui/base";
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+
 const AddChatScreen = ({ navigation }) => {
-  const [input, setInput] = useState("");
+  const [inputChat, setInputChat] = useState("");
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -20,22 +22,44 @@ const AddChatScreen = ({ navigation }) => {
       headerBackTitle: "Chats",
     });
   }, [navigation]);
-  const createChat = async () => {};
+  const createChat = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "Chats"), {
+        ChatName: inputChat,
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigation.goBack();
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Input
         placeholder="Enter a chat name"
-        value={input}
-        onChangeText={(text) => setInput(text)}
+        value={inputChat}
+        onChangeText={(text) => setInputChat(text)}
+        onSubmitEditing={createChat}
         leftIcon={
           <Icon name="weixin" type="antdesign" size={24} color={"black"} />
         }
       />
-      <Button onPress={createChat} title={"Create new Chat"} />
+      <Button
+        disabled={!inputChat}
+        onPress={createChat}
+        title={"Create new Chat"}
+      />
     </View>
   );
 };
 
 export default AddChatScreen;
 
-const styles = StyleSheet.create({ container: {} });
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 10,
+    height: "100%",
+  },
+});

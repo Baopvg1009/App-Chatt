@@ -6,15 +6,21 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomListItem from "../Components/CustomListItem";
 import { Avatar } from "@rneui/base";
 import { getAuth, signOut } from "firebase/auth";
+import { doc, onSnapshot, collection } from "firebase/firestore";
+import { db } from "../firebase";
+
 import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
   const auth = getAuth();
+
+  const [chats, setChats] = useState([]); //
+
   const signOutUser = async () => {
     signOut(auth)
       .then(() => {
@@ -25,6 +31,19 @@ const HomeScreen = ({ navigation }) => {
         // An error happened.
       });
   };
+
+  useEffect(() => {
+    const dbRef = collection(db, "Chats");
+    const unsub = onSnapshot(dbRef, (docsSnap) => {
+      const chats = docsSnap.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
+      setChats(chats);
+      console.log(chats); //OK
+    });
+    return unsub;
+  }, []); //Get all Document
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,10 +88,21 @@ const HomeScreen = ({ navigation }) => {
     });
   }, [navigation]);
 
+  const enterChat = (id, ChatName) => {
+    navigation.navigate("Chat", { id, ChatName });
+    console.log(id, ChatName);
+  };
   return (
     <SafeAreaView>
-      <ScrollView>
-        <CustomListItem />
+      <ScrollView style={styles.container}>
+        {chats.map(({ id, data: { ChatName } }) => (
+          <CustomListItem
+            key={id}
+            id={id}
+            ChatName={ChatName}
+            enterChat={enterChat}
+          ></CustomListItem>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -80,4 +110,8 @@ const HomeScreen = ({ navigation }) => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+  },
+});

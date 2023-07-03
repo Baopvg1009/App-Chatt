@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import firebase from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import {
   getAuth,
   createUserWithEmailAndPassword,
