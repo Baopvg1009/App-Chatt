@@ -165,7 +165,7 @@ const ChatScreen = ({ navigation, route }) => {
                       source={{ uri: data.photoURL }}
                     />
                     <Text style={styles.senderText}>{data.message}</Text>
-                    <Text style={styles.senderName}>{data.displayName}</Text>
+                    <Text style={styles.senderName}> {data.displayName}</Text>
                   </View>
                 )
               )}
@@ -218,7 +218,9 @@ const styles = StyleSheet.create({
   senderName: {
     left: 35,
     paddingRight: 10,
-    fontSize: 10,
+    paddingLeft: 7,
+    paddingTop: 20,
+    fontSize: 12,
     color: "white",
   },
   receiverText: {

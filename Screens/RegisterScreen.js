@@ -207,7 +207,13 @@ const RegisterScreen = ({ navigation }) => {
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <Text>Have acount?</Text>
           <TouchableOpacity>
-            <Text style={{ color: "purple", fontWeight: 700 }}> Log in</Text>
+            <Text
+              style={{ color: "purple", fontWeight: 700 }}
+              onPress={() => navigation.goBack()}
+            >
+              {" "}
+              Log in
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
